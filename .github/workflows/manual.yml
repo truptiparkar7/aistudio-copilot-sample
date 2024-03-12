@@ -1,0 +1,36 @@
+# This is a basic workflow that is manually triggered
+
+name: manual
+
+on:
+  workflow_call:
+    inputs:
+      env_name:
+        type: string
+        description: "Execution Environment"
+        required: true
+        default: "dev"
+      flow_type:
+        type: string
+        description: "The flow usecase to execute"
+        required: true
+        default: "web_classification"
+  pull_request:
+    branches:
+      - main
+      - development
+    paths:
+      - '.github/**'
+
+
+#=====================================
+# Execute platform_pr_dev_workflow workflow for experiment, evaluation and deployment of flows
+#=====================================
+jobs:
+  execute-platform-pr-workflow:
+    uses: ./.github/workflows/manual.yml
+    with:
+      env_name: ${{ inputs.env_name || 'pr'}}
+      flow_type: ${{ inputs.flow_type || 'web_classification' }}
+    secrets:
+      azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
